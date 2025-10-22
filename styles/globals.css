@@ -1,0 +1,38 @@
+:root {
+  --max-width: 1200px;
+  --accent: #111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  margin: 0;
+  color: #111;
+  background: #fff;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.footer {
+  background: #111;
+  color: #fff;
+  padding: 32px;
+  margin-top: 48px;
+}
