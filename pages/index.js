@@ -12,6 +12,10 @@ export default function Home({ products }) {
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [sortOption, setSortOption] = useState("Recommended");
 
+  // New: mobile dropdown states
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [mobileSortOpen, setMobileSortOpen] = useState(false);
+
   const pageTitle = "Discover our products | Appscrip task demo";
   const pageDescription =
     "A sample product listing page built with Next.js demonstrating SSR, responsive layout, SEO and minimal dependencies.";
@@ -37,15 +41,15 @@ export default function Home({ products }) {
   };
 
   const filterOptions = {
-    "Customizable": [],
+    Customizable: [],
     "Ideal For": ["Men", "Women", "Baby & Kids"],
-    "Occasion": ["Casual", "Formal", "Party"],
-    "Work": ["Office", "Outdoor", "Travel"],
-    "Fabric": ["Cotton", "Silk", "Denim"],
-    "Segment": ["Premium", "Budget", "Luxury"],
+    Occasion: ["Casual", "Formal", "Party"],
+    Work: ["Office", "Outdoor", "Travel"],
+    Fabric: ["Cotton", "Silk", "Denim"],
+    Segment: ["Premium", "Budget", "Luxury"],
     "Suitable For": ["Daily Use", "Wedding", "Sports"],
     "Raw Materials": ["Organic Cotton", "Recycled", "Synthetic"],
-    "Pattern": ["Solid", "Printed", "Striped"],
+    Pattern: ["Solid", "Printed", "Striped"],
   };
 
   const schema = {
@@ -78,7 +82,62 @@ export default function Home({ products }) {
       <main className="container">
         <section className={styles.pageHeader}>
           <h1 className="heroTitle">DISCOVER OUR PRODUCTS</h1>
+          <p className="heroDesc">
+            Lorem ipsum dolor sit amet consectetur. Amet est posuere rhoncus
+            scelerisque. Dolor integer scelerisque nibh amet mi ut elementum
+            dolor.
+          </p>
         </section>
+
+        {/* ✅ MOBILE FILTER + SORT BAR */}
+        <div className="mobileControls">
+          <button
+            className="dropdownBtn"
+            onClick={() => {
+              setMobileFilterOpen(!mobileFilterOpen);
+              setMobileSortOpen(false);
+            }}
+          >
+            FILTER ▾
+          </button>
+          <button
+            className="dropdownBtn"
+            onClick={() => {
+              setMobileSortOpen(!mobileSortOpen);
+              setMobileFilterOpen(false);
+            }}
+          >
+            {sortOption.toUpperCase()} ▾
+          </button>
+        </div>
+
+        {/* ✅ Mobile Filter Dropdown */}
+        {mobileFilterOpen && (
+          <div className="dropdownList">
+            {Object.keys(filterOptions).map((item) => (
+              <div key={item} className="dropdownItem">
+                {item}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ✅ Mobile Sort Dropdown */}
+        {mobileSortOpen && (
+          <div className="dropdownList">
+            {["Newest First", "Popular", "Price: High to Low", "Price: Low to High"].map(
+              (opt) => (
+                <div
+                  key={opt}
+                  className="dropdownItem"
+                  onClick={() => handleSortChange(opt)}
+                >
+                  {opt}
+                </div>
+              )
+            )}
+          </div>
+        )}
 
         <div className={styles.layout}>
           {/* --- FILTER SIDEBAR --- */}
@@ -151,77 +210,8 @@ export default function Home({ products }) {
             </aside>
           )}
 
-          {!showFilter && (
-            <div style={{ marginBottom: 12 }}>
-              <button
-                onClick={toggleFilter}
-                style={{
-                  border: "1px solid #ccc",
-                  background: "none",
-                  padding: "4px 8px",
-                  cursor: "pointer",
-                }}
-              >
-                Show Filter
-              </button>
-            </div>
-          )}
-
           {/* --- PRODUCT GRID + SORT --- */}
           <div className={styles.gridWrap}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 12,
-                position: "relative",
-              }}
-            >
-              <div>3425 ITEMS</div>
-              <div style={{ position: "relative" }}>
-                <button
-                  onClick={toggleSort}
-                  style={{
-                    border: "none",
-                    background: "none",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                  }}
-                >
-                  {sortOption} ▾
-                </button>
-                {showSort && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                      background: "#fff",
-                      border: "1px solid #ccc",
-                      padding: "8px",
-                      zIndex: 5,
-                    }}
-                  >
-                    {[
-                      "Newest First",
-                      "Popular",
-                      "Price: High to Low",
-                      "Price: Low to High",
-                    ].map((opt) => (
-                      <div key={opt}>
-                        <label
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleSortChange(opt)}
-                        >
-                          {opt}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
             <section className={styles.productsGrid} aria-label="Product grid">
               {products.map((p) => (
                 <ProductCard key={p.id} product={p} />
@@ -236,6 +226,7 @@ export default function Home({ products }) {
   );
 }
 
+// ✅ Fakestore API call remains the same
 export async function getServerSideProps() {
   try {
     const res = await fetch("https://fakestoreapi.com/products");
